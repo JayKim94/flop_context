@@ -99,13 +99,13 @@ defmodule FlopContext do
   Besides the obvious of passing in the `id`, as second parameter you can also pass `criteria` from above. It will remove ordering.
   """
 
-  def context(repo, queries_module, schema_module, singular_form, plural_form) do
+  def context(queries_module, schema_module, singular_form, plural_form) do
     quote do
       schema_module_name = unquote(schema_module) |> Module.split() |> Enum.reverse() |> hd()
+      repo = Application.get_env(:flop_context, :repo) || raise "No repo"
 
       alias Ecto.Multi
 
-      alias unquote(repo)
       alias unquote(queries_module)
       alias unquote(schema_module)
 
@@ -152,7 +152,7 @@ defmodule FlopContext do
         query
         |> Flop.query(flop, for: unquote(schema_module))
         |> unquote(queries_module).maybe_remove_limit_and_offset(criteria)
-        |> unquote(repo).all(log: log)
+        |> repo.all(log: log)
       end
 
       @doc """
@@ -186,7 +186,7 @@ defmodule FlopContext do
              query <- Flop.with_named_bindings(query, flop, &unquote(queries_module).join_assocs/2, for: unquote(schema_module)) do
           query
           |> Flop.query(flop, for: unquote(schema_module))
-          |> unquote(repo).get(id)
+          |> repo.get(id)
         end
       end
 
@@ -221,7 +221,7 @@ defmodule FlopContext do
              query <- Flop.with_named_bindings(query, flop, &unquote(queries_module).join_assocs/2, for: unquote(schema_module)) do
           query
           |> Flop.query(flop, for: unquote(schema_module))
-          |> unquote(repo).get!(id)
+          |> repo.get!(id)
         end
       end
 
@@ -252,7 +252,7 @@ defmodule FlopContext do
              query <- Flop.with_named_bindings(query, flop, &unquote(queries_module).join_assocs/2, for: unquote(schema_module)) do
           query
           |> Flop.query(flop, for: unquote(schema_module))
-          |> unquote(repo).one()
+          |> repo.one()
         end
       end
 
