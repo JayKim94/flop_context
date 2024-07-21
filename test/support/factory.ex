@@ -72,7 +72,7 @@ defmodule FlopContext.Factory do
   def user_factory do
     %User{
       name: sequence(:name, @names),
-      email: sequence(:email, &("#{String.downcase(&1)}@#{Enum.random(@domains)}")),
+      email: sequence(:email, &("user_#{&1}@#{Enum.random(@domains)}")),
       age: :rand.uniform(70) + 10,
       active: Enum.random([true, false])
     }

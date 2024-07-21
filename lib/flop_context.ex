@@ -102,7 +102,6 @@ defmodule FlopContext do
   def context(queries_module, schema_module, singular_form, plural_form) do
     quote do
       schema_module_name = unquote(schema_module) |> Module.split() |> Enum.reverse() |> hd()
-      repo = Application.compile_env(:flop_context, :repo) || raise "No repo for Flop"
 
       alias Ecto.Multi
 
@@ -149,6 +148,8 @@ defmodule FlopContext do
       end
 
       defp unquote(:"do_list_#{plural_form}")(query, criteria, flop, false, log) do
+        repo = Application.get_env(:flop_context, :repo) || raise "No repo for Flop"
+
         query
         |> Flop.query(flop, for: unquote(schema_module))
         |> unquote(queries_module).maybe_remove_limit_and_offset(criteria)
@@ -178,6 +179,7 @@ defmodule FlopContext do
       end
 
       def unquote(:"get_#{singular_form}")(id, criteria) when is_map(criteria) do
+        repo = Application.get_env(:flop_context, :repo) || raise "No repo for Flop"
         {flop_response, criteria} = Map.pop(criteria, :flop, false)
 
         with query <- unquote(queries_module).with_query(criteria),
@@ -213,6 +215,7 @@ defmodule FlopContext do
       end
 
       def unquote(:"get_#{singular_form}!")(id, criteria) when is_map(criteria) do
+        repo = Application.get_env(:flop_context, :repo) || raise "No repo for Flop"
         {flop_response, criteria} = Map.pop(criteria, :flop, false)
 
         with query <- unquote(queries_module).with_query(criteria),
@@ -244,6 +247,7 @@ defmodule FlopContext do
       end
 
       def unquote(:"one_#{singular_form}")(criteria) when is_map(criteria) do
+        repo = Application.get_env(:flop_context, :repo) || raise "No repo for Flop"
         {flop_response, criteria} = Map.pop(criteria, :flop, false)
 
         with query <- unquote(queries_module).with_query(criteria),

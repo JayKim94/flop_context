@@ -3,7 +3,6 @@ defmodule FlopContextTest do
   use ExUnitProperties
 
   import FlopContext.Factory
-  import FlopContext.Test
 
   alias Ecto.Adapters.SQL.Sandbox
   alias FlopContext.Repo

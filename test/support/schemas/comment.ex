@@ -9,8 +9,8 @@ defmodule FlopContext.Schemas.Comment do
 
   schema "comments" do
     field :content, :string
-    belongs_to :user, MyApp.Accounts.User
-    belongs_to :post, MyApp.Blog.Post
+    belongs_to :user, User
+    belongs_to :post, Post
 
     timestamps()
   end
