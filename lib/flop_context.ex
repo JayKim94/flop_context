@@ -102,7 +102,7 @@ defmodule FlopContext do
   def context(queries_module, schema_module, singular_form, plural_form) do
     quote do
       schema_module_name = unquote(schema_module) |> Module.split() |> Enum.reverse() |> hd()
-      repo = Application.get_env(:flop, :repo) || raise "No repo for Flop"
+      repo = Application.compile_env(:flop_context, :repo) || raise "No repo for Flop"
 
       alias Ecto.Multi
 
